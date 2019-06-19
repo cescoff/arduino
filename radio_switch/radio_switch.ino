@@ -1,6 +1,6 @@
-const int radioAntennaPin = 7;
-const int blackPin =  8;
-const int redPin =  9;
+const int radioAntennaPin = 6;
+const int blackPin =  7;
+const int redPin =  8;
 
 int switchState = 1;
 
@@ -17,14 +17,18 @@ void setup() {
 }
 
 void loop(){
-	int radioAntennaState = digitalRead(radioAntennaPin);
-	if (radioAntennaState == LOW) {
-		switchState = 2;
-		digitalWrite(blackPin, HIGH);
-		digitalWrite(redPin, HIGH);		
-	} else if (switchState == 2) {
-		switchState = 1;
-		digitalWrite(blackPin, LOW);
-		digitalWrite(redPin, LOW);		
-	}
+  int radioAntennaState = digitalRead(radioAntennaPin);
+  if (radioAntennaState == LOW) {
+    if (switchState == 1) {
+      switchState = 2;
+      digitalWrite(blackPin, HIGH);
+      digitalWrite(redPin, HIGH);  
+      Serial.println("STATE[2]"); 
+    }
+  } else if (switchState == 2) {
+    switchState = 1;
+    digitalWrite(blackPin, LOW);
+    digitalWrite(redPin, LOW);    
+    Serial.println("STATE[1]"); 
+  }
 }
