@@ -19,12 +19,17 @@ void setup() {
 void loop(){
 	int radioAntennaState = digitalRead(radioAntennaPin);
 	if (radioAntennaState == LOW) {
-		switchState = 2;
-		digitalWrite(blackPin, HIGH);
-		digitalWrite(redPin, HIGH);		
+    if (switchState == 1) {
+      switchState = 2;
+      digitalWrite(blackPin, HIGH);
+      digitalWrite(redPin, HIGH);   
+      Serial.println("Switch mode 2");
+    }
 	} else if (switchState == 2) {
 		switchState = 1;
 		digitalWrite(blackPin, LOW);
 		digitalWrite(redPin, LOW);		
+    Serial.println("Switch mode 1");
 	}
+  delay(100);
 }
