@@ -20,7 +20,7 @@ const int debug = 1;
 
 const int bindBlueWithYellow = 1;
 
-const long WAIT = 5;
+const long WAIT = 50;
 
 const int CONTACT_ON = 1;
 const int CONTACT_OFF = 2;
@@ -174,7 +174,9 @@ void loop(){
    if (vinSoundSystem >= minVoltage) {
       handleSoundSystemSwitch(ON);
    } else {
-      handleSoundSystemSwitch(OFF);
+      if (vinContact < minVoltage) {
+        handleSoundSystemSwitch(OFF);
+      }
    }
 
    if (vinFrontDoor >= minVoltage) {
