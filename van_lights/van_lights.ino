@@ -94,6 +94,9 @@ int blueLightState = OFF;
 
 float loopCount = 0;
 
+float contactOffMaxCount;
+int contactOffCount = -1;
+
 void setup(){
    pinMode(contactInput, INPUT);
    pinMode(soundSystemInput, INPUT);
@@ -118,6 +121,7 @@ void setup(){
     digitalWrite(blueLightOutput, LOW);
    }
 
+   contactOffMaxCount = (5 * 60 * 1000) / WAIT;
    
    mySwitch.enableReceive(0);
 
@@ -174,9 +178,7 @@ void loop(){
    if (vinSoundSystem >= minVoltage) {
       handleSoundSystemSwitch(ON);
    } else {
-      if (vinContact < minVoltage) {
-        handleSoundSystemSwitch(OFF);
-      }
+      handleSoundSystemSwitch(OFF);
    }
 
    if (vinFrontDoor >= minVoltage) {
@@ -248,10 +250,12 @@ void handleEvent(int event) {
 
   if (event == SOUND_SYSTEM_SWITCH_ON || event == SOUND_SYSTEM_SWITCH_OFF) {
     Serial.println(" /|\\ [STATE] Sound system switch");
-    if (isSoundSystemOff()) {
-       turnOnSoundSystem();
-    } else {
-       turnOffSoundSystem();
+    if (contactState == OFF) {
+      if (isSoundSystemOff()) {
+         turnOnSoundSystem();
+      } else {
+         turnOffSoundSystem();
+      }
     }
   }
 
@@ -267,7 +271,11 @@ void handleEvent(int event) {
 
   if (event == FRONT_DOOR_OPEN) {
     Serial.println(" /|\\ [OPEN] Front door");
-    handleEvent(LIGHTS_ON);
+    if (!isBaseCampMode()) {
+      handleEvent(LIGHTS_ON);
+    } else if (isRearDoorClosed()) {
+      handleEvent(LIGHTS_ON);
+    }
   } else if (event == FRONT_DOOR_CLOSE) {
     Serial.println(" /|\\ [CLOSE] Front door");
     if (isRearDoorClosed()) {
@@ -359,12 +367,18 @@ void handleEvent(int event) {
 
 void handleContact(int action) {
   if (action == ON && contactState == OFF) {
+    contactOffCount = 0;
     contactState = ON;
     handleEvent(CONTACT_ON);
   }
   if (action == OFF && contactState == ON) {
     contactState = OFF;
     handleEvent(CONTACT_OFF);
+  }
+  if (action == OFF) {
+      if (contactOffCount >= 0 && contactOffCount <= contactOffMaxCount) {
+        contactOffCount++;
+      }
   }
 }
 
@@ -473,6 +487,10 @@ bool isRearDoorOpened() {
 
 bool isRearDoorClosed() {
   return rearDoorState == CLOSED;
+}
+
+bool isBaseCampMode() {
+  return contactOffCount <= contactOffMaxCount;
 }
 
 bool isRemoteOpen(long test) {
