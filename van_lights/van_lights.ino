@@ -295,21 +295,21 @@ void handleEvent(int event) {
 
   if (event == REMOTE_DOOR_OPEN) {
     Serial.println(" /|\\ [OPEN] Remote");
-    handleEvent(LIGHTS_ON);
+//    handleEvent(LIGHTS_ON);
   } else if (event == REMOTE_DOOR_CLOSE) {
     Serial.println(" /|\\ [CLOSE] Remote");
-    handleEvent(LIGHTS_OFF);
+/*    handleEvent(LIGHTS_OFF);
     if (bindBlueWithYellow != 1) {
       if (isBlueLightsOn()) {
         turnOffBlueLights();
       }
-    }
+    }*/
   } else if (event == REMOTE_LIGHT) {
     Serial.println(" /|\\ [ON] Remote");
     handleEvent(CHANGE_LIGHTS_STATE);
     if (bindBlueWithYellow != 1) {
-      if (isBlueLightsOn()) {
-        turnOffBlueLights();
+      if (isBlueLightsOff()) {
+        turnOnBlueLights();
       }
     }
   }
@@ -338,10 +338,10 @@ void handleEvent(int event) {
 
   if (event == CHANGE_LIGHTS_STATE) {
     Serial.println(" /|\\ [STATE] Lights");
-    if (isYellowLightsOn()) {
-      handleEvent(LIGHTS_OFF);
-    } else {
+    if (isYellowLightsOff()) {
       handleEvent(LIGHTS_ON);
+    } else {
+      handleEvent(LIGHTS_OFF);
     }
   }
 
