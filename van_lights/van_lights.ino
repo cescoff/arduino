@@ -122,6 +122,7 @@ void setup(){
    }
 
    contactOffMaxCount = (5 * 60 * 1000) / WAIT;
+   contactOffCount = -1;
    
    mySwitch.enableReceive(0);
 
@@ -271,9 +272,7 @@ void handleEvent(int event) {
 
   if (event == FRONT_DOOR_OPEN) {
     Serial.println(" /|\\ [OPEN] Front door");
-    if (!isBaseCampMode()) {
-      handleEvent(LIGHTS_ON);
-    } else if (isRearDoorClosed()) {
+    if (isRearDoorClosed()) {
       handleEvent(LIGHTS_ON);
     }
   } else if (event == FRONT_DOOR_CLOSE) {
@@ -288,7 +287,7 @@ void handleEvent(int event) {
     handleEvent(LIGHTS_ON);
   } else if (event == REAR_DOOR_CLOSE) {
     Serial.println(" /|\\ [CLOSE] Rear door");
-    if (isFrontDoorClosed()) {
+    if (isFrontDoorClosed() && !isBaseCampMode()) {
       handleEvent(LIGHTS_OFF);
     }
   }
@@ -338,7 +337,7 @@ void handleEvent(int event) {
 
   if (event == CHANGE_LIGHTS_STATE) {
     Serial.println(" /|\\ [STATE] Lights");
-    if (isYellowLightsOff()) {
+    if (isYellowLightsOff() && isBlueLightsOff()) {
       handleEvent(LIGHTS_ON);
     } else {
       handleEvent(LIGHTS_OFF);
@@ -376,7 +375,7 @@ void handleContact(int action) {
     handleEvent(CONTACT_OFF);
   }
   if (action == OFF) {
-      if (contactOffCount >= 0 && contactOffCount <= contactOffMaxCount) {
+      if (contactOffCount <= contactOffMaxCount) {
         contactOffCount++;
       }
   }
@@ -490,7 +489,7 @@ bool isRearDoorClosed() {
 }
 
 bool isBaseCampMode() {
-  return contactOffCount <= contactOffMaxCount;
+  return contactOffCount >= (contactOffMaxCount - 1);
 }
 
 bool isRemoteOpen(long test) {
