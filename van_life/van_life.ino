@@ -50,7 +50,7 @@ String names[6] = {"GLOBAL", "YELLOW_LIGHTS", "BLUE_LIGHTS", "SOUND_SYSTEM", "WA
 
 int switchValues[][2] = {{switch1, HIGH}, {switch2, HIGH}, {switch3, HIGH}, {switch4, HIGH}, {switch5, HIGH}};
 // [SWITCH_ID, OUTPUT_ID, OUTPUT_STATE, STATE_LESS, NAME_POINTER, VOLTAGE_THRESHOLD]
-int switchBindings[][6] = {{switch1, outputRelay1, RELAY1_STATE, 1, 1, 10}, {switch2, outputRelay2, RELAY2_STATE, 1, 2, 11}, {switch3, outputRelay3, RELAY3_STATE, 0, 3, 11}, {switch5, outputRelay4, RELAY4_STATE, 0, 4, 12}, {switch4, outputRelay5, RELAY5_STATE, 0, 5, 12}};
+int switchBindings[][6] = {{switch1, outputRelay1, RELAY1_STATE, 1, 1, 10}, {switch2, outputRelay2, RELAY2_STATE, 1, 2, 11}, {switch3, outputRelay3, RELAY3_STATE, 1, 3, 11}, {switch5, outputRelay4, RELAY4_STATE, 1, 4, 12}, {switch4, outputRelay5, RELAY5_STATE, 1, 5, 12}};
 
 // Voltage handling
 
@@ -228,6 +228,9 @@ int isOutputOn(int switchId) {
 }
 
 bool isVoltageDisabled(int switchId) {
+  if (!handleVoltage) {
+    return false;
+  }
   int voltageMinutesCount = 0;
   float voltageSum = 0;
   for (int i=0; i<sizeof voltages/sizeof voltages[0]; i++) {
