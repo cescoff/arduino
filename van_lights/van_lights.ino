@@ -272,37 +272,37 @@ void handleEvent(int event) {
 
   if (event == FRONT_DOOR_OPEN) {
     Serial.println(" /|\\ [OPEN] Front door");
-    if (isRearDoorClosed()) {
+ /*   if (isRearDoorClosed()) {
       handleEvent(LIGHTS_ON);
-    }
+    }*/
   } else if (event == FRONT_DOOR_CLOSE) {
     Serial.println(" /|\\ [CLOSE] Front door");
-    if (isRearDoorClosed()) {
+ /*   if (isRearDoorClosed()) {
        handleEvent(LIGHTS_OFF);
-    }
+    }*/
   }
     
   if (event == REAR_DOOR_OPEN) {
     Serial.println(" /|\\ [OPEN] Rear door");
-    handleEvent(LIGHTS_ON);
+//    handleEvent(LIGHTS_ON);
   } else if (event == REAR_DOOR_CLOSE) {
     Serial.println(" /|\\ [CLOSE] Rear door");
     if (isFrontDoorClosed() && !isBaseCampMode()) {
-      handleEvent(LIGHTS_OFF);
+ //     handleEvent(LIGHTS_OFF);
     }
   }
 
   if (event == REMOTE_DOOR_OPEN) {
     Serial.println(" /|\\ [OPEN] Remote");
-//    handleEvent(LIGHTS_ON);
+    handleEvent(LIGHTS_ON);
   } else if (event == REMOTE_DOOR_CLOSE) {
     Serial.println(" /|\\ [CLOSE] Remote");
-/*    handleEvent(LIGHTS_OFF);
+    handleEvent(LIGHTS_OFF);
     if (bindBlueWithYellow != 1) {
       if (isBlueLightsOn()) {
         turnOffBlueLights();
       }
-    }*/
+    }
   } else if (event == REMOTE_LIGHT) {
     Serial.println(" /|\\ [ON] Remote");
     handleEvent(CHANGE_LIGHTS_STATE);
